@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Formula Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styels.css">
+</head>
+
+<body>
+
+    <br /><br />
+
+
+    <div id="intradaytcdvibrationtime" style="display: block;   text-align: center; width: 100%;">
+
+        <label>Market open Price</label><br />
+        <input type="number" id="numberInput" placeholder="Enter a number" value="3033.00" />
+        <br />
+        <button onclick="applyFormula()">Submit</button>
+        <div id="ps"  ></div>
+        <div style="width: 800px; margin: 20px auto;">
+
+            <div id="bullish" style="float: left; width: 170px;"></div>
+            
+
+            <div id="ptsoutput" style="float: left; width: 450px;"></div>
+            <div id="bearish" style="float: left; width: 100px;"></div>
+            <div style="clear: both;"></div> 
+        </div>
+    </div>
+
+    <script>
+
+        const input = parseFloat(document.getElementById('numberInput').value);
+        const initialDegree = 15;
+        const initialDegreeFactor = parseFloat(1 / 180);
+        const incrementByDegree = 15;
+        const maxLoop = 60;
+
+        function applyFormula() {
+
+            if (!isNaN(input) && input >= 0) {
+
+                var tsr = ""
+                let sqrtValue = parseFloat(Math.sqrt(input));
+                calculateBulish(sqrtValue)
+                calculateBearish(sqrtValue)
+                //tsr += sqrtValue + "<br/>"
+
+                // let degreeFactor = parseFloat((initialDegreeFactor * initialDegree));
+                // let Adds = parseFloat(sqrtValue + degreeFactor);
+                // let ps = Math.pow(Adds, 2);
+                // let Subs = parseFloat(sqrtValue - degreeFactor);
+                // let psSub = Math.pow(Subs, 2);
+
+                // tsr += degreeFactor + "<br/>"
+                // tsr += Adds + "<br/>"
+                // tsr += ps + "<br/>"
+                // tsr += Subs + "<br/>"
+                // tsr += psSub + "<br/>"
+                tsr += `<table> <tr>
+                        <th >Deg</th>
+                        <th>Deg Factor</th>
+                        <th>ADD</th>
+                        <th>Price Square</th>
+                        <th>Sub</th>
+                        <th>Price Square</th>
+                    </tr>`
+                let tempDegree = 0;
+                let tempDegFactor = 0;
+                let tempAdd;
+                let tempADDPS;
+                let tempSUB;
+                let tempSUBPS;
+                for (let i = 0; i <= maxLoop; i++) {
+                    tsr += ` <tr>`
+                    tsr += `<td>${tempDegree += initialDegree}</td>`
+                    tsr += `<td>${(tempDegFactor = parseFloat((initialDegreeFactor * tempDegree))).toFixed(2)}</td>`
+                    tsr += `<td>${(tempAdd = parseFloat(sqrtValue + tempDegFactor)).toFixed(2)}</td>`
+                    tsr += `<td>${(tempADDPS = Math.pow(tempAdd, 2)).toFixed(2)}</td>`
+                    tsr += `<td>${(tempSUB = parseFloat(sqrtValue - tempDegFactor)).toFixed(2)}</td>`
+                    tsr += `<td>${(tempSUBPS = Math.pow(tempSUB, 2)).toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                tsr += `</table>`
+
+                document.getElementById('ptsoutput').innerHTML = `
+              
+                 ${tsr}       
+                 
+                `                ;
+
+                document.getElementById('ps').innerHTML = `
+                 Price Square : ${sqrtValue.toFixed(2)}       
+                 
+                 
+                `                ;
+                
+
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+
+
+        }
+
+
+
+
+
+
+        function calculateBulish(sqrtValue) {
+            var tsr = ""
+            tsr += `<table>  `
+            let tempDegree = 0;
+            let tempDegFactor = 0;
+            let tempAdd;
+            let tempADDPS;
+            let tempSUB;
+            let tempSUBPS;
+            let ba = 0;
+            let bulissSL = 0;
+            for (let i = 0; i <= maxLoop; i++) {
+                tempDegree += initialDegree;
+                tempDegFactor = parseFloat((initialDegreeFactor * tempDegree));
+                tempAdd = parseFloat(sqrtValue + tempDegFactor);
+                tempADDPS = Math.pow(tempAdd, 2);
+                tempSUB = parseFloat(sqrtValue - tempDegFactor);
+                tempSUBPS = Math.pow(tempSUB, 2);
+
+                if (tempDegree == 15) {
+                    bulissSL = ((tempADDPS + tempSUBPS) / 2)
+                }
+
+                if (tempDegree === 45 || tempDegree === 60) {
+                    ba += tempADDPS
+                }
+                if (tempDegree === 60) {
+                    ba = ba / 2;
+                    tsr += ` <tr>`
+                    tsr += `<td>Bulish Above:</td>`
+                    tsr += `<td>${ba.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 90) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 1 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 120) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 2 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 180) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 3 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 270) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 4 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 360) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 5 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 420) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 6 :</td>`
+                    tsr += `<td>${tempADDPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+
+
+            }
+            tsr += ` <tr>`
+            tsr += `<td>SL:</td>`
+            tsr += `<td>${bulissSL.toFixed(2)}</td>`
+            tsr += ` </tr>`
+            tsr += `</table>`
+
+            document.getElementById('bullish').innerHTML = `
+                  
+                 ${tsr}       
+                 
+                `                ;
+        }
+
+        function calculateBearish(sqrtValue) {
+            var tsr = ""
+            tsr += `<table>  `
+            let tempDegree = 0;
+            let tempDegFactor = 0;
+            let tempAdd;
+            let tempADDPS;
+            let tempSUB;
+            let tempSUBPS;
+            let ba = 0;
+            let bulissSL = 0;
+            for (let i = 0; i <= maxLoop; i++) {
+                tempDegree += initialDegree;
+                tempDegFactor = parseFloat((initialDegreeFactor * tempDegree));
+                tempAdd = parseFloat(sqrtValue + tempDegFactor);
+                tempADDPS = Math.pow(tempAdd, 2);
+                tempSUB = parseFloat(sqrtValue - tempDegFactor);
+                tempSUBPS = Math.pow(tempSUB, 2);
+
+                if (tempDegree == 15) {
+                    bulissSL = ((tempADDPS + tempSUBPS) / 2)
+                }
+
+                if (tempDegree === 45 || tempDegree === 60) {
+                    ba += tempSUBPS
+                }
+                if (tempDegree === 60) {
+                    ba = ba / 2;
+                    tsr += ` <tr>`
+                    tsr += `<td>Bearish Above:</td>`
+                    tsr += `<td>${ba.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 90) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 1 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 120) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 2 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 180) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 3 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 270) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 4 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 360) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 5 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+                if (tempDegree == 420) {
+                    tsr += ` <tr>`
+                    tsr += `<td>TGT 6 :</td>`
+                    tsr += `<td>${tempSUBPS.toFixed(2)}</td>`
+                    tsr += ` </tr>`
+                }
+
+
+            }
+            tsr += ` <tr>`
+            tsr += `<td>SL:</td>`
+            tsr += `<td>${bulissSL.toFixed(2)}</td>`
+            tsr += ` </tr>`
+            tsr += `</table>`
+
+            document.getElementById('bearish').innerHTML = `
+                  
+                 ${tsr}       
+                 
+                `                ;
+        }
+    </script>
+
+</body>
+
+</html>
