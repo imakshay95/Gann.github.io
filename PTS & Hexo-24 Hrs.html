@@ -52,15 +52,15 @@
                 const sqrtValue = Math.sqrt(input);
                 const multipliedValue = sqrtValue * 180;
                 const subtractedValue = multipliedValue - 225;
-                const degree = (subtractedValue % 360).toFixed(7);
+                const degree = (subtractedValue % 360);
 
                 //deg / 4
-                const degree2hrs = (degree / 4).toFixed(9);
+                const degree2hrs = (degree / 4);
 
                 document.getElementById('ptsoutput').innerHTML = `
                  <h2>  Price Time square Intraday  </h2>
-                Degree : ${degree} <br/> 
-                TCD Cycle : ${degree2hrs} <br/> 
+                Degree : ${degree.toFixed(7)} <br/> 
+                TCD Cycle : ${degree2hrs.toFixed(9)} <br/> 
                 Round of : ${Math.round(degree2hrs)} <br/> 
                 
                  
@@ -76,16 +76,16 @@
         }
         function calculateHexo(input) {
               //hexo 
-              const hexoDegree = calculateModFormula(input).toFixed(7);
+              const hexoDegree = calculateModFormula(input);
             // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
 
             //deg to hrs
-            const degree2hrs = (hexoDegree / 6).toFixed(9);
+            const degree2hrs = (hexoDegree / 6);
 
             document.getElementById('hexooutput').innerHTML = `
                  <h2>  Hexo Price Time Intraday </h2>
-                Degree : ${hexoDegree} <br/> 
-                 TCD Cycle		 : ${degree2hrs} <br/> 
+                Degree : ${hexoDegree.toFixed(7)} <br/> 
+                 TCD Cycle		 : ${degree2hrs.toFixed(9)} <br/> 
                  Round of : ${Math.round(degree2hrs)} <br/> 
                  
 
