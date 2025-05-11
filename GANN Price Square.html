@@ -33,14 +33,14 @@
 
     <script>
 
-        const input = parseFloat(document.getElementById('numberInput').value);
+        var input = parseFloat(document.getElementById('numberInput').value);
         const initialDegree = 15;
         const initialDegreeFactor = parseFloat(1 / 180);
         const incrementByDegree = 15;
         const maxLoop = 60;
 
         function applyFormula() {
-
+            input = parseFloat(document.getElementById('numberInput').value);
             if (!isNaN(input) && input >= 0) {
 
                 var tsr = ""
