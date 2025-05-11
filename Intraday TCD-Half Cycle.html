@@ -112,7 +112,7 @@ Avoid 1st 30-35 Mins Time"
                 
 
                 `                ;
-                calculateHexo(input)
+                calculateHexo(input,firstTimeToAddToInitial)
 
 
             } else {
@@ -120,7 +120,7 @@ Avoid 1st 30-35 Mins Time"
             }
         }
 
-        function calculateHexo(input) {
+        function calculateHexo(input,firstTimeToAddToInitial) {
             //hexo 
             const hexoDegree = calculateModFormula(input);
             // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
@@ -211,7 +211,7 @@ Avoid 1st 30-35 Mins Time"
         //PTS--------------------
         //hexo--------------------
         function calculateModFormula(input) {
-            const result = (210 * Math.sqrt(input) - 180) % 360;
+            const result = (210 * Math.sqrt(input) - 180) % 180;
             return result;
         }
         //hexo--------------------
