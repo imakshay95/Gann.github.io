@@ -70,14 +70,14 @@ Avoid 1st 30-35 Mins Time"
                // test+=" "+multipliedValue
                 const subtractedValue = multipliedValue - 225;
                // test+=" "+subtractedValue
-                const degree = (subtractedValue % 180).toFixed(7);
+                const degree = (subtractedValue % 180);
 
                 //deg to hrs
-                const degree2hrs = (degree / 60).toFixed(9);
+                const degree2hrs = (degree / 60);
                 // extract number part
                 const numberPart = Math.floor(degree2hrs);
                 //decimal part
-                const decimalOnly = extractDecimalPart(degree2hrs).toFixed(2);
+                const decimalOnly = extractDecimalPart(degree2hrs);
                 //Minuts using decimal
                 const Minutss = calculateRoundedValue(decimalOnly)
                 var vibrationTime = concatenateValues(numberPart, Minutss)
@@ -101,10 +101,10 @@ Avoid 1st 30-35 Mins Time"
                 document.getElementById('ptsoutput').innerHTML = `
                  <h2> PTS:1  </h2>
                      ${test} <br/> 
-                Degree : ${degree} <br/> 
-                Hrs : ${degree2hrs} <br/> 
+                Degree : ${degree.toFixed(7)} <br/> 
+                Hrs : ${degree2hrs.toFixed(9)} <br/> 
                 Number : ${numberPart} <br/> 
-                Decimal : ${decimalOnly}<br/> 
+                Decimal : ${decimalOnly.toFixed(2)}<br/> 
                 Hours : ${numberPart} || Mins : ${Minutss}<br/> 
                 Next Vibration Hour : ${numberPart} || Min : ${Minutss}<br/> 
                 Vibration Time : ${vibrationTime}<br/> 
@@ -122,15 +122,15 @@ Avoid 1st 30-35 Mins Time"
 
         function calculateHexo(input) {
             //hexo 
-            const hexoDegree = calculateModFormula(input).toFixed(7);
+            const hexoDegree = calculateModFormula(input);
             // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
 
             //deg to hrs
-            const degree2hrs = (hexoDegree / 60).toFixed(9);
+            const degree2hrs = (hexoDegree / 60);
             // extract number part
             const numberPart = Math.floor(degree2hrs);
             //decimal part
-            const decimalOnly = extractDecimalPart(degree2hrs).toFixed(2);
+            const decimalOnly = extractDecimalPart(degree2hrs);
             //Minuts using decimal
             const Minutss = calculateRoundedValue(decimalOnly)
             var vibrationTime = concatenateValues(numberPart, Minutss)
@@ -153,10 +153,10 @@ Avoid 1st 30-35 Mins Time"
 
             document.getElementById('hexooutput').innerHTML = `
                  <h2>  Hexo  PT </h2>
-                Degree : ${hexoDegree} <br/> 
-                Hrs : ${degree2hrs} <br/> 
+                Degree : ${hexoDegree.toFixed(7)} <br/> 
+                Hrs : ${degree2hrs.toFixed(9)} <br/> 
                 Number : ${numberPart} <br/> 
-                Decimal : ${decimalOnly}<br/> 
+                Decimal : ${decimalOnly.toFixed(2)}<br/> 
                 Hours : ${numberPart}  Mins : ${Minutss}<br/> 
                 Next Vibration Hour : ${numberPart} Min : ${Minutss}<br/> 
                 Vibration Time : ${vibrationTime}<br/> 
