@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
     <title>Custom Formula Calculator</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     <link rel="stylesheet" href="styels.css">
-    
+
 </head>
 
 <body>
 
-    <br/><br/>
+    <br /><br />
     <div id="intradaytcdvibrationtime" style="display: block;">
 
 
         <label>Market open time</label><br />
         <input type="text" id="mktTime" placeholder="MKT TIME" value="9:15" /><br />
         <label>Market open Price</label><br />
-        <input type="number" id="numberInput" placeholder="Enter a number" value="24370.7" />
+        <input type="text" id="numberInput" placeholder="Enter a number" />
         <br />
         <button onclick="applyFormula()">Submit</button>
 
@@ -29,38 +29,26 @@
 
         <p class="notes">
             "N.B
-Avoid 1st 30-35 Mins Time"	
-	
-	
+            Avoid 1st 30-35 Mins Time"
+
+
         </p>
 
     </div>
 
     <script>
 
-        function showhideintradaytcdvibrationtime() {
-            var x = document.getElementById("intradaytcdvibrationtime");
-            if (x.style.display === "none") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
-            }
-        }
-
-        function showhideptshexo24hrstime() {
-            var x = document.getElementById("ptshexo24hrstime");
-            if (x.style.display === "none") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
-            }
-        }
+        var input = document.getElementById('numberInput').value;
+        var firstTimeToAddToInitial = document.getElementById('mktTime').value;
 
 
-        const input = document.getElementById('numberInput').value;
-        const firstTimeToAddToInitial = document.getElementById('mktTime').value;
+
         function applyFormula() {
 
+            input = document.getElementById('numberInput').value;
+            firstTimeToAddToInitial = document.getElementById('mktTime').value;
+            
+            console.log("sdsdsdsss:" + input)
 
             if (!isNaN(input) && input >= 0) {
                 const sqrtValue = Math.sqrt(input);
@@ -69,11 +57,11 @@ Avoid 1st 30-35 Mins Time"
                 const degree = (subtractedValue % 360);
 
                 //deg to hrs
-                const degree2hrs = (degree / 60) ;
+                const degree2hrs = (degree / 60);
                 // extract number part
                 const numberPart = Math.floor(degree2hrs);
                 //decimal part
-                const decimalOnly = extractDecimalPart(degree2hrs) ;
+                const decimalOnly = extractDecimalPart(degree2hrs);
                 //Minuts using decimal
                 const Minutss = calculateRoundedValue(decimalOnly)
                 var vibrationTime = concatenateValues(numberPart, Minutss)
@@ -115,7 +103,7 @@ Avoid 1st 30-35 Mins Time"
             }
         }
 
-        function calculateHexo(input) {
+        function calculateHexo(input, firstTimeToAddToInitial) {
             //hexo 
             const hexoDegree = calculateModFormula(input);
             // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
