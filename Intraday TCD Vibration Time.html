@@ -19,7 +19,7 @@
         <label>Market open time</label><br />
         <input type="text" id="mktTime" placeholder="MKT TIME" value="9:15" /><br />
         <label>Market open Price</label><br />
-        <input type="number" id="numberInput" placeholder="Enter a number" value="5046" />
+        <input type="number" id="numberInput" placeholder="Enter a number" value="24370.7" />
         <br />
         <button onclick="applyFormula()">Submit</button>
 
@@ -57,7 +57,7 @@ Avoid 1st 30-35 Mins Time"
         }
 
 
-        const input = parseFloat(document.getElementById('numberInput').value);
+        const input = document.getElementById('numberInput').value;
         const firstTimeToAddToInitial = document.getElementById('mktTime').value;
         function applyFormula() {
 
@@ -66,14 +66,14 @@ Avoid 1st 30-35 Mins Time"
                 const sqrtValue = Math.sqrt(input);
                 const multipliedValue = sqrtValue * 180;
                 const subtractedValue = multipliedValue - 225;
-                const degree = (subtractedValue % 360).toFixed(7);
+                const degree = (subtractedValue % 360);
 
                 //deg to hrs
-                const degree2hrs = (degree / 60).toFixed(9);
+                const degree2hrs = (degree / 60) ;
                 // extract number part
                 const numberPart = Math.floor(degree2hrs);
                 //decimal part
-                const decimalOnly = extractDecimalPart(degree2hrs).toFixed(2);
+                const decimalOnly = extractDecimalPart(degree2hrs) ;
                 //Minuts using decimal
                 const Minutss = calculateRoundedValue(decimalOnly)
                 var vibrationTime = concatenateValues(numberPart, Minutss)
@@ -96,10 +96,10 @@ Avoid 1st 30-35 Mins Time"
 
                 document.getElementById('ptsoutput').innerHTML = `
                  <h2> PTS:1  </h2>
-                Degree : ${degree} <br/> 
-                Hrs : ${degree2hrs} <br/> 
+                Degree : ${degree.toFixed(2)} <br/> 
+                Hrs : ${degree2hrs.toFixed(7)} <br/> 
                 Number : ${numberPart} <br/> 
-                Decimal : ${decimalOnly}<br/> 
+                Decimal : ${decimalOnly.toFixed(7)}<br/> 
                 Hours : ${numberPart}  Mins : ${Minutss}<br/> 
                 Next Vibration Hour : ${numberPart} Min : ${Minutss}<br/> 
                 Vibration Time : ${vibrationTime}<br/> 
@@ -117,15 +117,15 @@ Avoid 1st 30-35 Mins Time"
 
         function calculateHexo(input) {
             //hexo 
-            const hexoDegree = calculateModFormula(input).toFixed(7);
+            const hexoDegree = calculateModFormula(input);
             // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
 
             //deg to hrs
-            const degree2hrs = (hexoDegree / 60).toFixed(9);
+            const degree2hrs = (hexoDegree / 60);
             // extract number part
             const numberPart = Math.floor(degree2hrs);
             //decimal part
-            const decimalOnly = extractDecimalPart(degree2hrs).toFixed(2);
+            const decimalOnly = extractDecimalPart(degree2hrs);
             //Minuts using decimal
             const Minutss = calculateRoundedValue(decimalOnly)
             var vibrationTime = concatenateValues(numberPart, Minutss)
@@ -148,10 +148,10 @@ Avoid 1st 30-35 Mins Time"
 
             document.getElementById('hexooutput').innerHTML = `
                  <h2>  Hexo  PT </h2>
-                Degree : ${hexoDegree} <br/> 
-                Hrs : ${degree2hrs} <br/> 
+                Degree : ${hexoDegree.toFixed(7)} <br/> 
+                Hrs : ${degree2hrs.toFixed(9)} <br/> 
                 Number : ${numberPart} <br/> 
-                Decimal : ${decimalOnly}<br/> 
+                Decimal : ${decimalOnly.toFixed(2)}<br/> 
                 Hours : ${numberPart}  Mins : ${Minutss}<br/> 
                 Next Vibration Hour : ${numberPart} Min : ${Minutss}<br/> 
                 Vibration Time : ${vibrationTime}<br/> 
