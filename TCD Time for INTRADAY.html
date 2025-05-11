@@ -48,11 +48,11 @@
     <script>
 
 
-        const input = parseFloat(document.getElementById('numberInput').value);
+        var input = parseFloat(document.getElementById('numberInput').value);
 
         function applyFormula() {
 
-
+            input = parseFloat(document.getElementById('numberInput').value);
             if (!isNaN(input) && input >= 0) {
                 var test = "";
                
