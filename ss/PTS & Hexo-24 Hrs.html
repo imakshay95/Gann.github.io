@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Formula Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styels.css">
+</head>
+
+<body>
+
+  <div class="container">
+        <h2>Intraday Vibration Time Calculator</h2>
+
+        <label>Market Open Price</label><br />
+        <input type="number" id="numberInput" placeholder="Enter a number" value="3427.86" />
+        <br />
+        <button onclick="applyFormula()">Submit</button>
+
+        <div id="ptsoutput" class="output-section"></div>
+        <div id="hexooutput" class="output-section"></div>
+
+        <p class="notes">
+            If TCD Cycle comes with less than 12 then Avoid the Cycles.<br />
+            N.B: Multiple of 9 & 12 will be given 1st Priority.<br /><br />
+            Mark the bar from 3:30 candle to given number.
+        </p>
+    </div>
+
+    <script>
+
+        var input = parseFloat(document.getElementById('numberInput').value);
+         
+        function applyFormula() {
+            input = parseFloat(document.getElementById('numberInput').value);
+
+            if (!isNaN(input) && input >= 0) {
+                const sqrtValue = Math.sqrt(input);
+                const multipliedValue = sqrtValue * 180;
+                const subtractedValue = multipliedValue - 225;
+                const degree = (subtractedValue % 360);
+
+                //deg / 4
+                const degree2hrs = (degree / 4);
+
+                document.getElementById('ptsoutput').innerHTML = `
+                 <h2>  Price Time square Intraday  </h2>
+                Degree : ${degree.toFixed(7)} <br/> 
+                TCD Cycle : ${degree2hrs.toFixed(9)} <br/> 
+                Round of : ${Math.round(degree2hrs)} <br/> 
+                
+                 
+                
+
+                `                ;
+                calculateHexo(input)
+
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+        }
+        function calculateHexo(input) {
+              //hexo 
+              const hexoDegree = calculateModFormula(input);
+            // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
+
+            //deg to hrs
+            const degree2hrs = (hexoDegree / 6);
+
+            document.getElementById('hexooutput').innerHTML = `
+                 <h2>  Hexo Price Time Intraday </h2>
+                Degree : ${hexoDegree.toFixed(7)} <br/> 
+                 TCD Cycle		 : ${degree2hrs.toFixed(9)} <br/> 
+                 Round of : ${Math.round(degree2hrs)} <br/> 
+                 
+
+                `                ;
+
+        }
+        //hexo--------------------
+        function calculateModFormula(input) {
+            const result = (210 * Math.sqrt(input) - 180) % 360;
+            return result;
+        }
+    </script>
+
+</body>
+
+</html>

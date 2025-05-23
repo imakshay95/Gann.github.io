@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Formula Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="styels.css">
+
+</head>
+
+<body>
+
+   <div class="container">
+        <h2>Intraday Vibration Time Calculator</h2>
+
+        <label>Market Open Time</label>
+        <input type="text" id="mktTime" placeholder="e.g. 9:15" value="9:15" />
+
+        <label>Market Open Price</label>
+        <input type="text" id="numberInput" placeholder="Enter a number" />
+
+        <button onclick="applyFormula()">Calculate</button>
+
+        <div id="ptsoutput" class="output-section"></div>
+        <div id="hexooutput" class="output-section"></div>
+
+        <p class="notes">N.B: Avoid 1st 30–35 Mins Time</p>
+    </div>
+
+    <script>
+
+        var input = document.getElementById('numberInput').value;
+        var firstTimeToAddToInitial = document.getElementById('mktTime').value;
+
+
+
+        function applyFormula() {
+
+            input = document.getElementById('numberInput').value;
+            firstTimeToAddToInitial = document.getElementById('mktTime').value;
+
+            console.log("sdsdsdsss:" + input)
+
+            if (!isNaN(input) && input >= 0) {
+                const sqrtValue = Math.sqrt(input);
+                const multipliedValue = sqrtValue * 180;
+                const subtractedValue = multipliedValue - 225;
+                const degree = (subtractedValue % 360);
+
+                //deg to hrs
+                const degree2hrs = (degree / 60);
+                // extract number part
+                const numberPart = Math.floor(degree2hrs);
+                //decimal part
+                const decimalOnly = extractDecimalPart(degree2hrs);
+                //Minuts using decimal
+                const Minutss = calculateRoundedValue(decimalOnly)
+                var vibrationTime = concatenateValues(numberPart, Minutss)
+                var vibrationTimeNext = vibrationTime
+
+
+                const subsequentTimeToAdd = vibrationTime;
+
+
+                var ccTime = ""
+
+                vibrationTimeNext = addTime(vibrationTime, firstTimeToAddToInitial);
+                ccTime += vibrationTimeNext + " | ";
+
+                for (let i = 2; i <= 20; i++) {
+                    vibrationTimeNext = addTime(vibrationTimeNext, subsequentTimeToAdd);
+                    ccTime += vibrationTimeNext + " | ";
+                    console.log(`Vibration Time after ${i} addition${i > 1 ? 's' : ''}:`, vibrationTimeNext);
+                }
+
+                document.getElementById('ptsoutput').innerHTML = `
+                 <h2> PTS:1  </h2>
+                Degree : ${degree.toFixed(2)} <br/> 
+                Hrs : ${degree2hrs.toFixed(7)} <br/> 
+                Number : ${numberPart} <br/> 
+                Decimal : ${decimalOnly.toFixed(7)}<br/> 
+                Hours : ${numberPart}  Mins : ${Minutss}<br/> 
+                Next Vibration Hour : ${numberPart} Min : ${Minutss}<br/> 
+                Vibration Time : ${vibrationTime}<br/> 
+                Next Time According to PTS: <br/> ${ccTime}<br/> 
+                
+
+                `                ;
+                calculateHexo(input,firstTimeToAddToInitial)
+
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+        }
+
+        function calculateHexo(input, firstTimeToAddToInitial) {
+            //hexo 
+            const hexoDegree = calculateModFormula(input);
+            // document.getElementById('hexooutput').innerHTML = `${hexoDegree}`
+
+            //deg to hrs
+            const degree2hrs = (hexoDegree / 60);
+            // extract number part
+            const numberPart = Math.floor(degree2hrs);
+            //decimal part
+            const decimalOnly = extractDecimalPart(degree2hrs);
+            //Minuts using decimal
+            const Minutss = calculateRoundedValue(decimalOnly)
+            var vibrationTime = concatenateValues(numberPart, Minutss)
+            var vibrationTimeNext = vibrationTime
+
+
+            const subsequentTimeToAdd = vibrationTime;
+
+
+            var ccTime = ""
+
+            vibrationTimeNext = addTime(vibrationTime, firstTimeToAddToInitial);
+            ccTime += vibrationTimeNext + " | ";
+
+            for (let i = 2; i <= 20; i++) {
+                vibrationTimeNext = addTime(vibrationTimeNext, subsequentTimeToAdd);
+                ccTime += vibrationTimeNext + " | ";
+                console.log(`Vibration Time after ${i} addition${i > 1 ? 's' : ''}:`, vibrationTimeNext);
+            }
+
+            document.getElementById('hexooutput').innerHTML = `
+                 <h2>  Hexo  PT </h2>
+                Degree : ${hexoDegree.toFixed(7)} <br/> 
+                Hrs : ${degree2hrs.toFixed(9)} <br/> 
+                Number : ${numberPart} <br/> 
+                Decimal : ${decimalOnly.toFixed(2)}<br/> 
+                Hours : ${numberPart}  Mins : ${Minutss}<br/> 
+                Next Vibration Hour : ${numberPart} Min : ${Minutss}<br/> 
+                Vibration Time : ${vibrationTime}<br/> 
+                Next Time According to PTS: <br/> ${ccTime}<br/> 
+                 
+
+                `                ;
+
+
+        }
+        //PTS--------------------
+        function addTime(timeString, timeToAdd) {
+            const [hoursStr, minutesStr] = timeString.split(':');
+            let hours = parseInt(hoursStr, 10);
+            let minutes = parseInt(minutesStr, 10);
+
+            const [addHoursStr, addMinutesStr] = timeToAdd.split(':');
+            const addH = parseInt(addHoursStr, 10);
+            const addM = parseInt(addMinutesStr, 10);
+
+            minutes += addM;
+            hours += addH;
+
+            const hoursToAddFromMinutes = Math.floor(minutes / 60);
+            hours += hoursToAddFromMinutes;
+            minutes %= 60;
+            hours %= 24;
+
+            return concatenateValues(hours, minutes);
+        }
+
+        function calculateRoundedValue(decimalOnly) {
+            const result = Math.round(decimalOnly * 60);
+            return result;
+        }
+
+        function extractDecimalPart(number) {
+            const absoluteNumber = Math.abs(number); // Handle negative numbers
+            const integerPart = Math.floor(absoluteNumber);
+            const decimalPart = absoluteNumber - integerPart;
+            return decimalPart;
+        }
+
+        function concatenateValues(hours, minutes) {
+            const separator = ":";
+            const formattedHours = String(hours).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const result = formattedHours + separator + formattedMinutes;
+            return result;
+        }
+
+        //PTS--------------------
+        //hexo--------------------
+        function calculateModFormula(input) {
+            const result = (210 * Math.sqrt(input) - 180) % 360;
+            return result;
+        }
+        //hexo--------------------
+    </script>
+
+
+
+</body>
+
+</html>

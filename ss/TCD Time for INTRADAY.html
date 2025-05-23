@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Formula Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styels.css">
+</head>
+
+<body>
+
+    <br /><br />
+
+    <div id="intradaytcdvibrationtime" style="display: block;">
+
+
+
+        <label>Market open Price at 9:08AM</label><br />
+        <input type="number" id="numberInput" placeholder="Enter a number" value="24568.9" />
+        <br />
+        <button onclick="applyFormula()">Submit</button>
+
+        <div id="ptsoutput"></div>
+
+        <div id="hexooutput"></div>
+
+        <p class="notes" style="align-items: start; text-align: start;">
+            "N.B: To get Open Price , Change RTH->ETH <br />
+            1. If Addition is Multiple of 9/12, then it will work Amazing. <br />
+            N.B: then Change ETH->RTH
+            2.Go to 5 Min Chart and Draw Cyclic Line with a Distance of Addition of Opeing Nos. <br />
+            3. Mark the High and Low of TCD Candle and go to 2/3 Min Chart and wait for Breakout and Retest the Level,
+            Find 50% and Take a Trade. <br />
+            4. SL: Previous High or Low/TCD High or Low. <br />
+            5. Target: 1:1.5/1:2/1:2.5/1:3 <br />
+            6. U can add two Nos, to get another Cyclic Date. <br />
+            7. If Addition without decimal is 12 and Addition with Decimal is 24, then 24 is definitely Tradeable. <br />
+
+            8. For Stoocks, Price Greater then 2500 or More Volatile." <br />
+
+
+
+        </p>
+
+    </div>
+
+    <script>
+
+
+        var input = parseFloat(document.getElementById('numberInput').value);
+
+        function applyFormula() {
+
+            input = parseFloat(document.getElementById('numberInput').value);
+            if (!isNaN(input) && input >= 0) {
+                var test = "";
+               
+                document.getElementById('ptsoutput').innerHTML = `
+                 <h2> PTS:1  </h2>
+                     ${test} <br/> 
+                sumOfDigitsWithoutDecimal : ${sumOfDigitsWithoutDecimal(input)} <br/> 
+                sumOfDigitsWithDecimal : ${sumOfDigitsWithDecimal(input)} <br/> 
+               
+                
+
+                `                ;
+                
+
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+        }
+
+        function sumOfDigitsWithoutDecimal(number) {
+            const numString = Math.abs(number).toString();
+            const integerString = numString.split('.')[0];
+            let sum = 0;
+            for (let i = 0; i < integerString.length; i++) {
+                sum += parseInt(integerString[i], 10);
+            }
+            return sum;
+        }
+
+        function sumOfDigitsWithDecimal(number) {
+            const numString = Math.abs(number).toString();
+            let sum = 0;
+            for (let i = 0; i < numString.length; i++) {
+                if (numString[i] !== '.') { // Exclude the decimal point itself
+                    sum += parseInt(numString[i], 10);
+                }
+            }
+            return sum;
+        }
+    </script>
+
+
+
+
+</body>
+
+</html>

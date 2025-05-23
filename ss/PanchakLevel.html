@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Levels Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <link rel="stylesheet" href="styels.css"> -->
+     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            max-width: 600px;
+            width: 95%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .output-section {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .output-section h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .output-section p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #2e86de;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>  
+</head>
+<body>
+    <div class="container">
+        <h2>Monthly Levels Calculator</h2>
+
+        <label>High Price</label>
+        <input type="number" id="numberInput" placeholder="Enter High Price" value="2138" />
+
+        <label>Low Price</label>
+        <input type="number" id="numberInputLow" placeholder="Enter Low Price" value="2054" />
+
+        <button onclick="applyFormula()">Submit</button>
+
+        <div class="output-section" id="difference"></div>
+        <div class="output-section" id="levelMultiplier"></div>
+        <div class="output-section" id="ptsoutput"></div>
+        <div class="output-section" id="hexooutput"></div>
+        <div class="output-section" id="bullishabove"></div>
+        <div class="output-section" id="bearishbelow"></div>
+    </div>
+
+    <script>
+        let Bullishbreakoutlevel = 0;
+        let Bearishbreakoutlevel = 0;
+
+        function applyFormula() {
+            const highInputPrice = parseFloat(document.getElementById('numberInput').value);
+            const lowInputPrice = parseFloat(document.getElementById('numberInputLow').value);
+
+            if (!isNaN(highInputPrice) && highInputPrice >= 0 && !isNaN(lowInputPrice) && lowInputPrice >= 0) {
+                const difference = highInputPrice - lowInputPrice;
+                printDifference(difference);
+                countForUpside(highInputPrice, difference);
+                countForDownside(lowInputPrice, difference);
+                CountBullishAbove(lowInputPrice, highInputPrice, difference);
+                CountBearisBelow(highInputPrice, lowInputPrice, difference);
+            } else {
+                document.getElementById('ptsoutput').innerHTML = `<p class="highlight">Please enter valid non-negative numbers.</p>`;
+            }
+        }
+
+        function printDifference(difference) {
+            document.getElementById('difference').innerHTML = `<h2>Difference</h2><p class="highlight">${difference}</p>`;
+        }
+
+        function countForUpside(high, difference) {
+            Bullishbreakoutlevel = high;
+            let l1 = high + difference;
+            let l2 = l1 + difference;
+            let l3 = l2 + difference;
+
+            document.getElementById('ptsoutput').innerHTML = `
+                <h2>Upside Levels</h2>
+                <p>TGT-1: <span class="highlight">${l1.toFixed(2)}</span></p>
+                <p>TGT-2: <span class="highlight">${l2.toFixed(2)}</span></p>
+                <p>TGT-3: <span class="highlight">${l3.toFixed(2)}</span></p>
+                <p>Breakout Level: <span class="highlight">${high.toFixed(2)}</span></p>
+            `;
+        }
+
+        function countForDownside(low, difference) {
+            Bearishbreakoutlevel = low;
+            let l1 = low - difference;
+            let l2 = l1 - difference;
+            let l3 = l2 - difference;
+
+            document.getElementById('hexooutput').innerHTML = `
+                <h2>Downside Levels</h2>
+                <p>TGT-1: <span class="highlight">${l1.toFixed(2)}</span></p>
+                <p>TGT-2: <span class="highlight">${l2.toFixed(2)}</span></p>
+                <p>TGT-3: <span class="highlight">${l3.toFixed(2)}</span></p>
+                <p>Breakdown Level: <span class="highlight">${low.toFixed(2)}</span></p>
+            `;
+        }
+
+        function CountBullishAbove(low, high, difference) {
+            let bullishAbove = low + difference * 0.236;
+            let highlyBullish = low + difference * 0.618;
+
+            document.getElementById('bullishabove').innerHTML = `
+                <h2>Bullish Levels</h2>
+                <p>Bullish Above: <span class="highlight">${bullishAbove.toFixed(2)}</span></p>
+                <p>Highly Bullish Above: <span class="highlight">${highlyBullish.toFixed(2)}</span></p>
+                <p>Super Bullish Above: <span class="highlight">${high.toFixed(2)}</span></p>
+            `;
+        }
+
+        function CountBearisBelow(high, low, difference) {
+            let bearishBelow = high - difference * 0.236;
+            let highlyBearish = high - difference * 0.618;
+
+            document.getElementById('bearishbelow').innerHTML = `
+                <h2>Bearish Levels</h2>
+                <p>Bearish Below: <span class="highlight">${bearishBelow.toFixed(2)}</span></p>
+                <p>Highly Bearish Below: <span class="highlight">${highlyBearish.toFixed(2)}</span></p>
+                <p>Super Bearish Below: <span class="highlight">${low.toFixed(2)}</span></p>
+            `;
+        }
+    </script>
+</body>
+</html>
