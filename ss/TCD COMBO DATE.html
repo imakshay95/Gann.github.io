@@ -68,10 +68,10 @@
     <script>
 
         const maxLoop = 5;
-        const dateList = [];
-        const dateListfmt = [];
-        const dateListHexofmt = [];
-        const dateCount = {};
+        var dateList = [];
+        var dateListfmt = [];
+        var dateListHexofmt = [];
+        var dateCount = {};
 
         var monthlyhighinput = document.getElementById('monthlyhighinput').value;
         var monthlyhighdate = document.getElementById('monthlyhighdate').value;
@@ -79,8 +79,12 @@
         var monthlylowdate = document.getElementById('monthlylowdate').value;
         var totalTradingDays = document.getElementById('totalTradingDays').value;
 
-        applyFormula();
+       // applyFormula();
         function applyFormula() {
+            dateList=[];
+            dateListfmt=[];
+            dateListHexofmt=[];
+            dateCount={};
             monthlyhighinput = document.getElementById('monthlyhighinput').value;
             monthlyhighdate = document.getElementById('monthlyhighdate').value;
             monthlylowinput = document.getElementById('monthlylowinput').value;
@@ -102,7 +106,7 @@
 
 
             } else {
-                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+                document.getElementById('contprinttable').textContent = "Please enter a valid non-negative number.";
             }
 
 
@@ -448,7 +452,7 @@
         function calculate3rdTable() { }
 
         function isCheck(input) {
-            return !isNaN(input) && input >= 0
+            return !isNaN(input) && input >= 0 && input !=""
         }
 
         function printCounts() {
@@ -521,12 +525,12 @@
             var calenderDateMode = calculateModFormula(totalCalenderDays)
             var TradingDateMode = calculateModFormula(totalATradingDays)
 
-            tsr += `priceRange ${priceRange} <br/>`
-            tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
-            tsr += `totalTradingDays ${totalATradingDays} <br/>`
-            tsr += `Price Range Degree  ${priceRangeMod} <br/>`
-            tsr += `Total Calender Degree  ${calenderDateMode} <br/>`
-            tsr += `Total trading days Degree  ${TradingDateMode} <br/>`
+            // tsr += `priceRange ${priceRange} <br/>`
+            // tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
+            // tsr += `totalTradingDays ${totalATradingDays} <br/>`
+            // tsr += `Price Range Degree  ${priceRangeMod} <br/>`
+            // tsr += `Total Calender Degree  ${calenderDateMode} <br/>`
+            // tsr += `Total trading days Degree  ${TradingDateMode} <br/>`
 
 
 
@@ -599,8 +603,8 @@
             document.getElementById('hexoPat').innerHTML = `              
                  ${tsr}               
                 `                ;
-            console.log(`dsd: ${dateListHexofmt[0]}`)
-            console.log(`dsd1: ${dateListfmt[0]}`)
+            // console.log(`dsd: ${dateListHexofmt[0]}`)
+            // console.log(`dsd1: ${dateListfmt[0]}`)
             // console.log("dsd:"+${dateListHexo[0]})
 
             printCounts();
