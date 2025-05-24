@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TCS Combo Dates</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styels.css">
+    <style>
+        td {
+            font-size: small;
+            font-style: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <br /><br />
+
+
+    <div id="intradaytcdvibrationtime" style="display: block;   text-align: center; width: 100%;">
+
+        <label>Monthly High Price</label><br />
+        <input type="number" id="monthlyhighinput" placeholder="Enter a number" value="3128.135" required />
+        <br />
+        <label>Monthly High Date</label><br />
+        <input type="date" id="monthlyhighdate" placeholder="Enter a Date" value="2025-03-31" required />
+        <br />
+        <label>Monthly Low Price</label><br />
+        <input type="number" id="monthlylowinput" placeholder="Enter a number" value="2859" required />
+        <br />
+        <label>Monthly Low Date</label><br />
+        <input type="date" id="monthlylowdate" placeholder="Enter a Date" value="2025-03-03" required />
+        <br />
+        <label>Total trading days(Excluding Holidays)</label><br />
+        <input type="number" id="totalTradingDays" placeholder="Enter a days" value="21" required />
+        <br />
+        <button onclick="applyFormula()">Submit</button>
+
+        <div id="tradingDays"></div>
+        <div style="width: 100%; margin: 20px auto;">
+
+            <div id="contprinttable" style="float:left; width:30%;"></div>
+            <div id="hexoPat" style="float:left; width:40%;"></div>
+
+
+            <div style="clear: both;"></div>
+        </div>
+        <div style="width: 100%; margin: 20px auto;">
+
+            <div id="firstTableleft" style="float: left; width:40%;"></div>
+            <div id="firstTableRight" style="float: left; width: 40%; margin-left: 2%;"></div>
+            <div id="bearish" style="float: left; width: 100px;"></div>
+            <div style="clear: both;"></div>
+        </div>
+        <div style="width: 100%; margin: 20px auto;">
+
+            <div id="secondTableleft" style="float: left; width:40%;"></div>
+            <div id="secondTableRight" style="float: left; width: 40%; margin-left: 2%;"></div>
+            <div id="secondbearish" style="float: left; width: 100px;"></div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+
+    <script>
+
+        const maxLoop = 5;
+        const dateList = [];
+        const dateListfmt = [];
+        const dateListHexofmt = [];
+        const dateCount = {};
+
+        var monthlyhighinput = document.getElementById('monthlyhighinput').value;
+        var monthlyhighdate = document.getElementById('monthlyhighdate').value;
+        var monthlylowinput = document.getElementById('monthlylowinput').value;
+        var monthlylowdate = document.getElementById('monthlylowdate').value;
+        var totalTradingDays = document.getElementById('totalTradingDays').value;
+
+        applyFormula();
+        function applyFormula() {
+            monthlyhighinput = document.getElementById('monthlyhighinput').value;
+            monthlyhighdate = document.getElementById('monthlyhighdate').value;
+            monthlylowinput = document.getElementById('monthlylowinput').value;
+            monthlylowdate = document.getElementById('monthlylowdate').value;
+            totalTradingDays = document.getElementById('totalTradingDays').value;
+            //isCheck(monthlyhighdate) && isCheck(monthlylowdate)&&
+            if (isCheck(monthlyhighinput) && isCheck(monthlylowinput) && isCheck(totalTradingDays)) {
+                //pts
+                calculateFirstTableLeft();
+                calculateFirstTableRight();
+                calculate2ndTableLeft();
+                calculate2ndTableRight();
+
+                calculteTcdCombo1();
+
+                //calculate3rdTable();
+
+
+
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+
+
+        }
+        function calculatePriceRangeDegree(input) {
+            const sqrtValue = Math.sqrt(input);
+            const multipliedValue = sqrtValue * 180;
+            const subtractedValue = multipliedValue - 225;
+            const degree = (subtractedValue % 360);
+            return degree;
+        }
+
+        function calculateFirstTableLeft() {
+            const date1MonthlyLowDate = new Date(monthlylowdate);
+            const date2MonthlyHighDate = new Date(monthlyhighdate);
+            var tsr = "";
+
+            const priceRange = monthlyhighinput - monthlylowinput;
+            const priceRangeDegree = calculatePriceRangeDegree(priceRange);
+            //  var diffTotalDays = Math.floor((monthlyhighdate - monthlylowdate) / (1000 * 60 * 60 * 24));
+            var totalCalenderDays = Math.floor((date2MonthlyHighDate - date1MonthlyLowDate) / (1000 * 60 * 60 * 24)) + 1;
+            var totalCalenderDaysDegree = calculatePriceRangeDegree(totalCalenderDays);
+            var totalTradingDaysDegree = calculatePriceRangeDegree(totalTradingDays);
+            var lowAngel = Math.min(priceRangeDegree, totalCalenderDaysDegree, totalTradingDaysDegree)
+            var highAngel = Math.max(priceRangeDegree, totalCalenderDaysDegree, totalTradingDaysDegree)
+
+
+            // tsr += `priceRange ${priceRange.toFixed(3)} <br/>`
+            // tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
+            // tsr += `totalTradingDays ${totalTradingDays} <br/>`
+            // tsr += `priceRangeDegree ${priceRangeDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDaysDegree ${totalCalenderDaysDegree.toFixed(2)} <br/>`
+            // tsr += `totalTradingDaysDegree ${totalTradingDaysDegree.toFixed(2)} <br/>`
+            // tsr += `lowAngel ${lowAngel.toFixed(2)} <br/>`
+            // tsr += `highAngel ${highAngel.toFixed(2)} <br/>`
+
+
+
+            tsr += `<table> <tr>
+                        <th >No</th>
+                        <th>Low angle </th>
+                        <th>Date-1</th>
+                        <th>Date-2</th>
+                        <th>--</th>
+                        <th>High angle</th>
+                        <th>Date-3</th>
+                        <th>Date-4</th>
+                    </tr>`
+
+            for (let i = 0; i <= maxLoop; i++) {
+                tsr += ` <tr>`
+                tsr += `<td>${i + 1}</td>`
+
+                var lowAngelTable = Math.pow(2 * (i + 1) + 2 * (lowAngel / 365) + 1.25, 2)
+
+                tsr += `<td>${lowAngelTable.toFixed(2)}</td>`
+                var date1table = new Date(date2MonthlyHighDate);
+                var date1tablenonformmateddate = getDateWithNonFormatted(date1table, lowAngelTable)
+
+                var date2table = new Date(date1MonthlyLowDate);
+                var date2tablenonformmateddate = getDateWithNonFormatted(date2table, lowAngelTable)
+
+                var highAngelTable = Math.pow(2 * (i + 1) + 2 * (highAngel / 365) + 1.25, 2)
+                var date3tablenonformmateddate = getDateWithNonFormatted(new Date(date2MonthlyHighDate), highAngelTable);
+                var date4tablenonformmateddate = getDateWithNonFormatted(new Date(date1MonthlyLowDate), highAngelTable);
+                addDate(date1tablenonformmateddate)
+                addDate(date2tablenonformmateddate)
+                addDate(date3tablenonformmateddate)
+                addDate(date4tablenonformmateddate)
+
+                tsr += `<td>${getDateWithFormatted(date1tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date2tablenonformmateddate)}</td>`
+                tsr += `<td> </td>`
+
+                tsr += `<td>${highAngelTable.toFixed(2)}</td>`
+                tsr += `<td>${getDateWithFormatted(date3tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date4tablenonformmateddate)}</td>`
+                tsr += ` </tr>`
+            }
+            tsr += `</table>`
+
+            document.getElementById('firstTableleft').innerHTML = `              
+                 ${tsr}               
+                `                ;
+
+        }
+
+        function getDateWithFormatted(newDate) {
+            // newDate.setDate(newDate.getDate() + la);
+            const day = newDate.getDate().toString().padStart(2, '0');
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[newDate.getMonth()];
+            const year = newDate.getFullYear().toString().slice(-2); // last two digits
+
+            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const weekday = weekdays[newDate.getDay()];
+            const formattedDate = `${weekday} ${day}-${month}-${year}`;
+            return formattedDate;
+        }
+
+        function getDateWithNonFormatted(newDate, la) {
+            newDate.setDate(newDate.getDate() + la);
+            // const day = newDate.getDate().toString().padStart(2, '0');
+            // const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            //     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            // const month = monthNames[newDate.getMonth()];
+            // const year = newDate.getFullYear().toString().slice(-2); // last two digits
+
+            // const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            // const weekday = weekdays[newDate.getDay()];
+            // const formattedDate = `${weekday} ${day}-${month}-${year}`;
+            return newDate;
+        }
+
+        function calculateModFormula(input) {
+            const result = (210 * Math.sqrt(input) - 180) % 360;
+            return result;
+        }
+        function calculateFirstTableRight() {
+
+            const date1MonthlyLowDate = new Date(monthlylowdate);
+            const date2MonthlyHighDate = new Date(monthlyhighdate);
+            var tsr = "";
+
+            const priceRange = monthlyhighinput - monthlylowinput;
+            const priceRangeDegree = calculateModFormula(priceRange);
+            //  var diffTotalDays = Math.floor((monthlyhighdate - monthlylowdate) / (1000 * 60 * 60 * 24));
+            var totalCalenderDays = Math.floor((date2MonthlyHighDate - date1MonthlyLowDate) / (1000 * 60 * 60 * 24)) + 1;
+            var totalCalenderDaysDegree = calculateModFormula(totalCalenderDays);
+            var totalTradingDaysDegree = calculateModFormula(totalTradingDays);
+            var lowAngel = Math.min(priceRangeDegree, totalCalenderDaysDegree, totalTradingDaysDegree)
+            var highAngel = Math.max(priceRangeDegree, totalCalenderDaysDegree, totalTradingDaysDegree)
+
+
+
+            // tsr += `priceRangeDegree : ${priceRangeDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDaysDegree : ${totalCalenderDaysDegree.toFixed(2)} <br/>`
+            // tsr += `totalTradingDaysDegree : ${totalTradingDaysDegree.toFixed(2)} <br/>`
+            // tsr += `lowAngel : ${lowAngel.toFixed(2)} <br/>`
+            // tsr += `highAngel : ${highAngel.toFixed(2)} <br/>`
+
+
+
+            tsr += `<table> <tr>
+                        <th >No</th>
+                        <th>Low angle </th>
+                        <th>Date-1</th>
+                        <th>Date-2</th>
+                        <th>--</th>
+                        <th>High angle</th>
+                        <th>Date-3</th>
+                        <th>Date-4</th>
+                    </tr>`
+
+            for (let i = 0; i <= maxLoop; i++) {
+                tsr += ` <tr>`
+                tsr += `<td>${i + 1}</td>`
+
+                var lowAngelTable = Math.pow(2 * (i + 1) + 2 * (lowAngel / 365) + 1.25, 2)
+
+                tsr += `<td>${lowAngelTable.toFixed(2)}</td>`
+                var date1table = new Date(date2MonthlyHighDate);
+                var date1tablenonformmateddate = getDateWithNonFormatted(date1table, lowAngelTable)
+                var date2table = new Date(date1MonthlyLowDate);
+                var date2tablenonformmateddate = getDateWithNonFormatted(date2table, lowAngelTable)
+
+                var highAngelTable = Math.pow(2 * (i + 1) + 2 * (highAngel / 365) + 1.25, 2)
+                var date3tablenonformmateddate = getDateWithNonFormatted(new Date(date2MonthlyHighDate), highAngelTable);
+                var date4tablenonformmateddate = getDateWithNonFormatted(new Date(date1MonthlyLowDate), highAngelTable);
+
+                addDate(date1tablenonformmateddate)
+                addDate(date2tablenonformmateddate)
+                addDate(date3tablenonformmateddate)
+                addDate(date4tablenonformmateddate)
+
+                tsr += `<td>${getDateWithFormatted(date1tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date2tablenonformmateddate)}</td>`
+                tsr += `<td> </td>`
+
+                tsr += `<td>${highAngelTable.toFixed(2)}</td>`
+                tsr += `<td>${getDateWithFormatted(date3tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date4tablenonformmateddate)}</td>`
+                tsr += ` </tr>`
+            }
+            tsr += `</table>`
+
+            document.getElementById('firstTableRight').innerHTML = `              
+                 ${tsr}               
+                `                ;
+        }
+        function calculate2ndTableLeft() {
+
+            const date1MonthlyLowDate = new Date(monthlylowdate);
+            const date2MonthlyHighDate = new Date(monthlyhighdate);
+            var tsr = "";
+            const highPriceDegree = calculatePriceRangeDegree(monthlyhighinput)
+            const lowPriceDegree = calculatePriceRangeDegree(monthlylowinput)
+
+            const priceRange = monthlyhighinput - monthlylowinput;
+            const priceRangeDegree = calculatePriceRangeDegree(priceRange);
+            //  var diffTotalDays = Math.floor((monthlyhighdate - monthlylowdate) / (1000 * 60 * 60 * 24));
+            var totalCalenderDays = Math.floor((date2MonthlyHighDate - date1MonthlyLowDate) / (1000 * 60 * 60 * 24)) + 1;
+            var totalCalenderDaysDegree = calculatePriceRangeDegree(totalCalenderDays);
+            var totalTradingDaysDegree = calculatePriceRangeDegree(totalTradingDays);
+            var minimumTimeAngel = Math.min(priceRangeDegree, totalCalenderDaysDegree, totalTradingDaysDegree)
+            var highAngel = Math.min(highPriceDegree, lowPriceDegree)
+
+
+            // tsr += `highPriceDegree ${highPriceDegree.toFixed(2)} <br/>`
+            // tsr += `lowPriceDegree ${lowPriceDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
+            // tsr += `totalTradingDays ${totalTradingDays} <br/>`
+            // //  tsr += `priceRangeDegree ${priceRangeDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDaysDegree ${totalCalenderDaysDegree.toFixed(2)} <br/>`
+            // tsr += `totalTradingDaysDegree ${totalTradingDaysDegree.toFixed(2)} <br/>`
+            // tsr += `minimumTimeAngel ${minimumTimeAngel.toFixed(2)} <br/>`
+            // tsr += `minimumPriceAngel ${highAngel.toFixed(2)} <br/>`
+
+
+
+            tsr += `<table> <tr>
+                        <th >No</th>
+                        <th>Low angle </th>
+                        <th>Date-1</th>
+                        <th>Date-2</th>
+                        <th>--</th>
+                        <th>High angle</th>
+                        <th>Date-3</th>
+                        <th>Date-4</th>
+                    </tr>`
+
+            for (let i = 0; i <= maxLoop; i++) {
+                tsr += ` <tr>`
+                tsr += `<td>${i + 1}</td>`
+
+                var lowAngelTable = Math.pow(2 * (i + 1) + 2 * (minimumTimeAngel / 365) + 1.25, 2)
+
+                tsr += `<td>${lowAngelTable.toFixed(2)}</td>`
+                var date1table = new Date(date2MonthlyHighDate);
+                var date1tablenonformmateddate = getDateWithNonFormatted(date1table, lowAngelTable)
+                var date2table = new Date(date1MonthlyLowDate);
+                var date2tablenonformmateddate = getDateWithNonFormatted(date2table, lowAngelTable)
+
+                var highAngelTable = Math.pow(2 * (i + 1) + 2 * (highAngel / 365) + 1.25, 2)
+                var date3tablenonformmateddate = getDateWithNonFormatted(new Date(date2MonthlyHighDate), highAngelTable);
+                var date4tablenonformmateddate = getDateWithNonFormatted(new Date(date1MonthlyLowDate), highAngelTable);
+                addDate(date1tablenonformmateddate)
+                addDate(date2tablenonformmateddate)
+                addDate(date3tablenonformmateddate)
+                addDate(date4tablenonformmateddate)
+
+                tsr += `<td>${getDateWithFormatted(date1tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date2tablenonformmateddate)}</td>`
+                tsr += `<td> </td>`
+
+                tsr += `<td>${highAngelTable.toFixed(2)}</td>`
+                tsr += `<td>${getDateWithFormatted(date3tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date4tablenonformmateddate)}</td>`
+                tsr += ` </tr>`
+            }
+            tsr += `</table>`
+
+            document.getElementById('secondTableleft').innerHTML = `              
+                 ${tsr}               
+                `                ;
+        }
+        function calculate2ndTableRight() {
+            const date1MonthlyLowDate = new Date(monthlylowdate);
+            const date2MonthlyHighDate = new Date(monthlyhighdate);
+            var tsr = "";
+            const highPriceDegree = calculateModFormula(monthlyhighinput)
+            const lowPriceDegree = calculateModFormula(monthlylowinput)
+
+            const priceRange = monthlyhighinput - monthlylowinput;
+            const priceRangeDegree = calculateModFormula(priceRange);
+            //  var diffTotalDays = Math.floor((monthlyhighdate - monthlylowdate) / (1000 * 60 * 60 * 24));
+            var totalCalenderDays = Math.floor((date2MonthlyHighDate - date1MonthlyLowDate) / (1000 * 60 * 60 * 24)) + 1;
+            var totalCalenderDaysDegree = calculateModFormula(totalCalenderDays);
+            var totalTradingDaysDegree = calculateModFormula(totalTradingDays);
+            var minimumTimeAngel = Math.min(totalCalenderDaysDegree, totalTradingDaysDegree)
+            var highAngel = Math.min(highPriceDegree, lowPriceDegree)
+
+
+            // tsr += `highPriceDegree ${highPriceDegree.toFixed(2)} <br/>`
+            // tsr += `lowPriceDegree ${lowPriceDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
+            // tsr += `totalTradingDays ${totalTradingDays} <br/>`
+            // //  tsr += `priceRangeDegree ${priceRangeDegree.toFixed(2)} <br/>`
+            // tsr += `totalCalenderDaysDegree ${totalCalenderDaysDegree.toFixed(2)} <br/>`
+            // tsr += `totalTradingDaysDegree ${totalTradingDaysDegree.toFixed(2)} <br/>`
+            // tsr += `minimumTimeAngel ${minimumTimeAngel.toFixed(2)} <br/>`
+            // tsr += `minimumPriceAngel ${highAngel.toFixed(2)} <br/>`
+
+
+
+            tsr += `<table> <tr>
+                        <th >No</th>
+                        <th>Low angle </th>
+                        <th>Date-1</th>
+                        <th>Date-2</th>
+                        <th>--</th>
+                        <th>High angle</th>
+                        <th>Date-3</th>
+                        <th>Date-4</th>
+                    </tr>`
+
+            for (let i = 0; i <= maxLoop; i++) {
+                tsr += ` <tr>`
+                tsr += `<td>${i + 1}</td>`
+
+                var lowAngelTable = Math.pow(2 * (i + 1) + 2 * (minimumTimeAngel / 365) + 1.25, 2)
+
+                tsr += `<td>${lowAngelTable.toFixed(2)}</td>`
+                var date1table = new Date(date2MonthlyHighDate);
+                var date1tablenonformmateddate = getDateWithNonFormatted(date1table, lowAngelTable)
+                var date2table = new Date(date1MonthlyLowDate);
+                var date2tablenonformmateddate = getDateWithNonFormatted(date2table, lowAngelTable)
+
+                var highAngelTable = Math.pow(2 * (i + 1) + 2 * (highAngel / 365) + 1.25, 2)
+                var date3tablenonformmateddate = getDateWithNonFormatted(new Date(date2MonthlyHighDate), highAngelTable);
+                var date4tablenonformmateddate = getDateWithNonFormatted(new Date(date1MonthlyLowDate), highAngelTable);
+                addDate(date1tablenonformmateddate)
+                addDate(date2tablenonformmateddate)
+                addDate(date3tablenonformmateddate)
+                addDate(date4tablenonformmateddate)
+
+                tsr += `<td>${getDateWithFormatted(date1tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date2tablenonformmateddate)}</td>`
+                tsr += `<td> </td>`
+
+                tsr += `<td>${highAngelTable.toFixed(2)}</td>`
+                tsr += `<td>${getDateWithFormatted(date3tablenonformmateddate)}</td>`
+                tsr += `<td>${getDateWithFormatted(date4tablenonformmateddate)}</td>`
+                tsr += ` </tr>`
+            }
+            tsr += `</table>`
+
+            document.getElementById('secondTableRight').innerHTML = `              
+                 ${tsr}               
+                `                ;
+        }
+        function calculate3rdTable() { }
+
+        function isCheck(input) {
+            return !isNaN(input) && input >= 0
+        }
+
+        function printCounts() {
+            var tsr = "";
+            const entries = Object.entries(dateCount)
+                .filter(([_, count]) => count > 1)
+                .sort((a, b) => b[1] - a[1]);
+            tsr += `<table> <tr>
+                        <th >Date</th>
+                        <th>Total Repeated Count</th>
+                        <th>Exist on Hexo table</th>
+                         
+                    </tr>`
+
+            for (const [date, count] of entries) {
+                tsr += ` <tr>`
+                tsr += `<td>${getDateWithFormatted(new Date(date))}</td>`
+                tsr += `<td>${count}</td>`
+                console.log(`sss:${date}`)
+                console.log(`sss1:${new Date(date)}`)
+                console.log(`sss2:${getDateWithFormatted(new Date(date))}`)
+                // const commonDates = dateList.filter(date => datelisthexo.includes(date));
+                var ss = dateListHexofmt.includes(getDateWithFormatted(new Date(date)));
+                if (ss === true) {
+                    tsr += `<td style="color:white;" bgcolor="green">${ss}</td>`
+                } else {
+                    tsr += `<td>${ss}</td>`
+                }
+
+                tsr += ` </tr>`
+                //  tsr += `${getDateWithFormatted(new Date(date))} was repeated ${count} times <br>`;
+                //console.log(`${date} was repeated ${count} times`);/
+
+            }
+            tsr += `</table>`
+
+
+            document.getElementById('contprinttable').innerHTML = `              
+                 ${tsr}               
+                `                ;
+        }
+
+        function addDate(dateInput) {
+            dateListfmt.push(getDateWithFormatted(dateInput))
+            const date = new Date(dateInput);
+            //const formatted = formatDate(date);
+
+            // Add to list
+            dateList.push(date);
+
+            // Track counts
+            if (dateCount[date]) {
+                dateCount[date]++;
+                //   console.log(`${date.toDateString()} (repeated ${dateCount[date]} times)`);
+            } else {
+                dateCount[date] = 1;
+                //  console.log(`${date} (added first time)`);
+            }
+        }
+
+        function calculteTcdCombo1() {
+            var tsr = "";
+            const date1MonthlyLowDate = new Date(monthlylowdate);
+            const date2MonthlyHighDate = new Date(monthlyhighdate);
+            const priceRange = monthlyhighinput - monthlylowinput;
+
+            var totalCalenderDays = Math.floor((date2MonthlyHighDate - date1MonthlyLowDate) / (1000 * 60 * 60 * 24)) + 1;
+            var totalATradingDays = totalTradingDays;
+            var priceRangeMod = calculateModFormula(priceRange)
+            var calenderDateMode = calculateModFormula(totalCalenderDays)
+            var TradingDateMode = calculateModFormula(totalATradingDays)
+
+            tsr += `priceRange ${priceRange} <br/>`
+            tsr += `totalCalenderDays ${totalCalenderDays} <br/>`
+            tsr += `totalTradingDays ${totalATradingDays} <br/>`
+            tsr += `Price Range Degree  ${priceRangeMod} <br/>`
+            tsr += `Total Calender Degree  ${calenderDateMode} <br/>`
+            tsr += `Total trading days Degree  ${TradingDateMode} <br/>`
+
+
+
+            tsr += `<table> <tr>
+                        <th >No</th>
+                        <th> - </th>
+                        <th> --</th>
+                        <th>--- </th>
+                        <th>Date1 </th>
+                        <th>Date2 </th>
+                        <th>Date3 </th>
+                        <th>Date4 </th>
+                        <th>Date5 </th>
+                        <th>Date6 </th>
+                     
+                        
+                      
+                    </tr>`
+
+            for (let i = 0; i <= 7; i++) {
+                tsr += ` <tr>`
+                tsr += `<td>${i}</td>`
+                var tt = Math.pow((priceRangeMod + 360 * i + 180) / 210, 2).toFixed(9)
+                tsr += `<td>${tt}</td>`
+                var tt1 = Math.pow((calenderDateMode + 360 * i + 180) / 210, 2).toFixed(9)
+                tsr += `<td>${tt1}</td>`
+                var tt2 = Math.pow((TradingDateMode + 360 * i + 180) / 210, 2).toFixed(9)
+                tsr += `<td>${tt2}</td>`
+                //date 1
+                var date1table = new Date(date2MonthlyHighDate);
+                var date1tablenonformmateddate = getDateWithNonFormatted(date1table, parseFloat(tt))
+                tsr += `<td>${getDateWithFormatted(new Date(date1tablenonformmateddate))}</td>`
+
+                //date 2
+                var date2table = new Date(date2MonthlyHighDate);
+                var date2tablenonformmateddate = getDateWithNonFormatted(date2table, parseFloat(tt1))
+                tsr += `<td>${getDateWithFormatted(new Date(date2tablenonformmateddate))}</td>`
+
+                //date 3
+                var date3table = new Date(date2MonthlyHighDate);
+                var date3tablenonformmateddate = getDateWithNonFormatted(date3table, parseFloat(tt2))
+                tsr += `<td>${getDateWithFormatted(new Date(date3tablenonformmateddate))}</td>`
+
+
+                //date 4
+                var date4table = new Date(date1MonthlyLowDate);
+                var date4tablenonformmateddate = getDateWithNonFormatted(date4table, parseFloat(tt))
+                tsr += `<td>${getDateWithFormatted(new Date(date4tablenonformmateddate))}</td>`
+                //date 5
+                var date5table = new Date(date1MonthlyLowDate);
+                var date5tablenonformmateddate = getDateWithNonFormatted(date5table, parseFloat(tt1))
+                tsr += `<td>${getDateWithFormatted(new Date(date5tablenonformmateddate))}</td>`
+
+                //date 6
+                var date6table = new Date(date1MonthlyLowDate);
+                var date6tablenonformmateddate = getDateWithNonFormatted(date6table, parseFloat(tt2))
+                tsr += `<td>${getDateWithFormatted(new Date(date6tablenonformmateddate))}</td>`
+
+                dateListHexofmt.push(getDateWithFormatted(date1tablenonformmateddate));
+                dateListHexofmt.push(getDateWithFormatted(date2tablenonformmateddate));
+                dateListHexofmt.push(getDateWithFormatted(date3tablenonformmateddate));
+                dateListHexofmt.push(getDateWithFormatted(date4tablenonformmateddate));
+                dateListHexofmt.push(getDateWithFormatted(date5tablenonformmateddate));
+                dateListHexofmt.push(getDateWithFormatted(date6tablenonformmateddate));
+                tsr += ` </tr>`
+            }
+            tsr += `</table>`
+
+
+            document.getElementById('hexoPat').innerHTML = `              
+                 ${tsr}               
+                `                ;
+            console.log(`dsd: ${dateListHexofmt[0]}`)
+            console.log(`dsd1: ${dateListfmt[0]}`)
+            // console.log("dsd:"+${dateListHexo[0]})
+
+            printCounts();
+
+        }
+
+
+    </script>
+
+</body>
+
+</html>
