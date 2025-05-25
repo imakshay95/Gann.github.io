@@ -13,6 +13,14 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
         }
+
+        label {
+            display: inline-block;
+            width: auto;
+            text-align: right;
+        }
+
+        ​
     </style>
 </head>
 
@@ -22,33 +30,44 @@
 
 
     <div id="intradaytcdvibrationtime" style="display: block;   text-align: center; width: 100%;">
-
-        <label>Monthly High Price</label><br />
-        <input type="number" id="monthlyhighinput" placeholder="Enter a number" value="3128.135" required />
-        <br />
-        <label>Monthly High Date</label><br />
-        <input type="date" id="monthlyhighdate" placeholder="Enter a Date" value="2025-03-31" required />
-        <br />
-        <label>Monthly Low Price</label><br />
-        <input type="number" id="monthlylowinput" placeholder="Enter a number" value="2859" required />
-        <br />
-        <label>Monthly Low Date</label><br />
-        <input type="date" id="monthlylowdate" placeholder="Enter a Date" value="2025-03-03" required />
-        <br />
-        <label>Total trading days(Excluding Holidays)</label><br />
-        <input type="number" id="totalTradingDays" placeholder="Enter a days" value="21" required />
-        <br />
+        <div>
+            <label>Monthly High Price : </label>
+            <input type="number" id="monthlyhighinput" placeholder="Enter a number" value="3128.135" required />
+            <br />
+        </div>
+        <div>
+            <label>Monthly High Date : </label>
+            <input type="date" id="monthlyhighdate" placeholder="Enter a Date" value="2025-03-31" required />
+            <br />
+        </div>
+        <div>
+            <label>Monthly Low Price : </label>
+            <input type="number" id="monthlylowinput" placeholder="Enter a number" value="2859" required />
+            <br />
+        </div>
+        <div>
+            <label>Monthly Low Date : </label>
+            <input type="date" id="monthlylowdate" placeholder="Enter a Date" value="2025-03-03" required />
+            <br />
+        </div>
+        <div>
+            <label>Total trading days<br />(Excluding Holidays) : </label>
+            <input type="number" id="totalTradingDays" placeholder="Enter a days" value="21" required />
+            <br />
+        </div>
         <button onclick="applyFormula()">Submit</button>
 
         <div id="tradingDays"></div>
         <div style="width: 100%; margin: 20px auto;">
 
-            <div id="contprinttable" style="float:left; width:30%;"></div>
-            <div id="hexoPat" style="float:left; width:40%;"></div>
+            <div id="contprinttable" style="float:left; width:40%;"></div>
+            <div id="confirmationtable" style="float:left; width:30%; margin-left: 10%;"></div>
+
 
 
             <div style="clear: both;"></div>
         </div>
+        <h3>Price & Time</h3>
         <div style="width: 100%; margin: 20px auto;">
 
             <div id="firstTableleft" style="float: left; width:40%;"></div>
@@ -63,11 +82,18 @@
             <div id="secondbearish" style="float: left; width: 100px;"></div>
             <div style="clear: both;"></div>
         </div>
+        <h3>Hexagonal Method to find TCD Date</h3>
+        <div style="width: 100%; margin: 20px auto;">
+            <div id="hexoPat" style="float:left; width:40%;"></div>
+
+            <div style="clear: both;"></div>
+        </div>
     </div>
 
     <script>
 
         const maxLoop = 5;
+        const incrementalByDay = 1;
         var dateList = [];
         var dateListfmt = [];
         var dateListHexofmt = [];
@@ -79,12 +105,12 @@
         var monthlylowdate = document.getElementById('monthlylowdate').value;
         var totalTradingDays = document.getElementById('totalTradingDays').value;
 
-       // applyFormula();
+        // applyFormula();
         function applyFormula() {
-            dateList=[];
-            dateListfmt=[];
-            dateListHexofmt=[];
-            dateCount={};
+            dateList = [];
+            dateListfmt = [];
+            dateListHexofmt = [];
+            dateCount = {};
             monthlyhighinput = document.getElementById('monthlyhighinput').value;
             monthlyhighdate = document.getElementById('monthlyhighdate').value;
             monthlylowinput = document.getElementById('monthlylowinput').value;
@@ -100,7 +126,7 @@
 
                 calculteTcdCombo1();
 
-                //calculate3rdTable();
+                calculate3rdTable();
 
 
 
@@ -449,10 +475,47 @@
                  ${tsr}               
                 `                ;
         }
-        function calculate3rdTable() { }
+
+        function calculate3rdTable() {
+            var tsr = "";
+            var significantRecentHighDate = new Date(monthlyhighdate);
+            var significantRecentLowDate = new Date(monthlylowdate);
+            tsr += `<table> <tr>
+                        <th colspan = "2">Confirmation Table (High Probability)</th>
+                        </tr>
+                        <tr>
+                        <th >Date 1</th>
+                        <th >Date 2</th>
+                         
+                        </tr>
+                        
+                    </tr>`
+            for (let i = 0; i <= 50; i++) {
+                tsr += ` <tr>`
+
+                if (i != 0 && i % 8 == 0) {
+                    tsr += `<td>${getDateWithFormatted(getDateWithNonFormatted(significantRecentHighDate, i))}</td>`
+                    // console.log(`dfd1: ${getDateWithNonFormatted(significantRecentHighDate, i)}`)
+                }
+                 if (i != 0 && i % 8 == 0) {
+                    tsr += `<td>${getDateWithFormatted(getDateWithNonFormatted(significantRecentLowDate, i))}</td>`
+                    // console.log(`dfd1: ${getDateWithNonFormatted(significantRecentHighDate, i)}`)
+                }
+                tsr += ` </tr>`
+            }
+            //  console.log(`dfd: ${significantRecentHighDate}`)
+            //console.log(`dfd1: ${getDateWithNonFormatted(significantRecentHighDate,incrementalByDay)}`)
+
+            tsr += `</table>`
+
+            document.getElementById('confirmationtable').innerHTML = `              
+                 ${tsr}               
+                `                ;
+
+        }
 
         function isCheck(input) {
-            return !isNaN(input) && input >= 0 && input !=""
+            return !isNaN(input) && input >= 0 && input != ""
         }
 
         function printCounts() {
@@ -471,15 +534,11 @@
                 tsr += ` <tr>`
                 tsr += `<td>${getDateWithFormatted(new Date(date))}</td>`
                 tsr += `<td>${count}</td>`
-                console.log(`sss:${date}`)
-                console.log(`sss1:${new Date(date)}`)
-                console.log(`sss2:${getDateWithFormatted(new Date(date))}`)
-                // const commonDates = dateList.filter(date => datelisthexo.includes(date));
                 var ss = dateListHexofmt.includes(getDateWithFormatted(new Date(date)));
                 if (ss === true) {
-                    tsr += `<td style="color:white;" bgcolor="green">${ss}</td>`
+                    tsr += `<td style="color:white;" bgcolor="green">YES</td>`
                 } else {
-                    tsr += `<td>${ss}</td>`
+                    tsr += `<td>NO</td>`
                 }
 
                 tsr += ` </tr>`

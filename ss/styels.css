@@ -114,6 +114,14 @@ input[type="number"] {
     border: 1px solid #ccc;
     border-radius: 6px;
 }
+input[type="date"] {
+    width: 20%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
 .output-section {
     text-align: left;
     margin-top: 25px;
