@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Formula Calculator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="styels.css">
+</head>
+
+<body>
+
+    <br /><br />
+
+
+    <div id="intradaytcdvibrationtime" style="display: block;   text-align: center; width: 100%;">
+
+        <label>Current Price</label><br />
+        <input type="number" id="numberInput" placeholder="Enter a number" value="24420" />
+        <br />
+        <button onclick="applyFormula()">Submit</button>
+        <div id="ps"></div>
+        <div style="width: 800px; margin: 20px auto;">
+
+            <div id="bullish" style="float: left; width: 170px;"></div>
+
+
+            <div id="ptsoutput" style="float: left; width: 450px;"></div>
+            <div id="bearish" style="float: left; width: 100px;"></div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+
+    <script>
+        var input = parseFloat(document.getElementById('numberInput').value);
+
+        function applyFormula() {
+            input = parseFloat(document.getElementById('numberInput').value);
+            if (!isNaN(input) && input >= 0) {
+                calculateResistance();
+                calculateBuyAbove();
+
+            } else {
+                document.getElementById('ptsoutput').textContent = "Please enter a valid non-negative number.";
+            }
+        }
+
+        function calculateResistance() {
+            var tsr = ""
+            const sqrt = Math.sqrt(input);
+            const nearestRoot = Math.round(sqrt);
+            const center = nearestRoot * nearestRoot;
+            const angles = [45, 90, 135, 180, 225, 270, 315, 360];
+
+            const buyAbove = Math.pow(nearestRoot + 135 / 360, 2);
+
+            var incBy = 180;
+
+            tsr += `<table> 
+                 `
+
+            for (let i = 0; i <= 4; i++) {
+
+                tsr += ` <tr>`
+                tsr += `<td> Res ${i + 1}</td>`
+                //  incBy = incBy+45;
+                tsr += `<td> ${Math.pow(incBy + 135 / 360, 2)}</td>`
+                incBy = incBy+45
+                tsr += ` </tr>`
+            }
+
+            tsr += `</table>`
+
+            document.getElementById('bullish').innerHTML = `
+              
+                 ${tsr}       
+                  `                ;
+        }
+
+        function calculateBuyAbove() {
+            var tsr = ""
+            const sqrt = Math.sqrt(input);
+            const nearestRoot = Math.round(sqrt);
+            const center = nearestRoot * nearestRoot;
+            const angles = [45, 90, 135, 180, 225, 270, 315, 360];
+
+            const buyAbove = Math.pow(nearestRoot + 135 / 360, 2);
+
+            const incBy = 0.9995;
+
+            tsr += `<table> <tr>
+                        <th >Buy At/Above</th>
+                        <th>${buyAbove}</th>
+                       
+                    </tr>`
+
+            for (let i = 0; i <= 8; i++) {
+                tsr += ` <tr>`
+                tsr += `<td> TGT ${i + 1}</td>`
+                tsr += `<td> sff</td>`
+                tsr += ` </tr>`
+            }
+
+            tsr += `</table>`
+
+            document.getElementById('ptsoutput').innerHTML = `
+              
+                 ${tsr}       
+                  `                ;
+        }
+
+    </script>
+
+
+</body>
+
+</html>

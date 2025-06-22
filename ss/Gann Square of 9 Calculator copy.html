@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gann Square of 9 Target Calculator</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    input, button { padding: 10px; font-size: 16px; }
+    #result { margin-top: 20px; }
+    .target-group { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Gann Square of 9 Target Calculator</h2>
+  <p>Enter a price to calculate potential buy/sell targets:</p>
+  <input type="number" id="priceInput" placeholder="Enter price" step="0.01">
+  <button onclick="calculateGannTargets()">Calculate</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculateGannTargets() {
+      const base = parseFloat(document.getElementById("priceInput").value);
+      const result = document.getElementById("result");
+      if (isNaN(base) || base <= 0) {
+        result.innerHTML = "<p>Please enter a valid price.</p>";
+        return;
+      }
+
+      const sqrt = Math.sqrt(base);
+      const nearestRoot = Math.round(sqrt);
+      const center = nearestRoot * nearestRoot;
+
+      const angles = [45, 90, 135, 180, 225, 270, 315, 360];
+      let output = `<h3>Results for Base Price: ${base}</h3>`;
+      output += `<p>Nearest Square: ${center} (√ = ${nearestRoot})</p>`;
+
+      output += "<div class='target-group'><strong>Buy Targets (clockwise):</strong><br>";
+      angles.forEach(angle => {
+        const target = Math.pow(nearestRoot + angle / 360, 2);
+        output += `+${angle}° ➜ ${target.toFixed(2)}<br>`;
+      });
+      output += "</div>";
+
+      output += "<div class='target-group'><strong>Sell Targets (anti-clockwise):</strong><br>";
+      angles.forEach(angle => {
+        const target = Math.pow(nearestRoot - angle / 360, 2);
+        output += `-${angle}° ➜ ${target.toFixed(2)}<br>`;
+      });
+      output += "</div>";
+
+      result.innerHTML = output;
+    }
+  </script>
+</body>
+</html>

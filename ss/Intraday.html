@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BTST & Result Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <link rel="stylesheet" href="styels.css"> -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            max-width: 600px;
+            width: 95%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .output-section {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .output-section h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .output-section p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #2e86de;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>BTST & Result Calculator</h2>
+        <a href="https://www.nseindia.com/get-quotes/derivatives?symbol=GODREJPROP">Future link</a>
+        <label>Future Buy </label>
+        <input type="number" id="futbuy" placeholder="Enter number" value="116000" />
+
+        <label>Future Sell</label>
+        <input type="number" id="futsell" placeholder="Enter number" value="247000" />
+
+        <label>Call positions </label>
+          <a href="https://www.nseindia.com/option-chain">Option chain link</a>
+        <input type="number" id="callpos" placeholder="Enter number" value="6464" />
+
+        <label>Put Positions</label>
+        <input type="number" id="putpos" placeholder="Enter number" value="4081" />
+
+        <label>Delivery Percentage Avarage </label>
+          <a href="https://www.nseindia.com/report-detail/eq_security">Delivery Percentage link</a>
+        <input type="number" id="delper" placeholder="Enter number" value="0.50" />
+
+        <button onclick="applyFormula()">Submit</button>
+
+        <div class="output-section" id="futratio"></div>
+        <div class="output-section" id="futstatus"></div>
+        <div class="output-section" id="pcrratio"></div>
+        <div class="output-section" id="pcrstatus"></div>
+        <div class="output-section" id="delstatus"></div>
+        <div class="output-section" id="overall"></div>
+    </div>
+
+    <script>
+        let futbuy = 0;
+        let futsell = 0;
+        let callpos = 0;
+        let putpos = 0;
+        let delper = 0;
+
+        function applyFormula() {
+            futbuy = parseFloat(document.getElementById('futbuy').value);
+            futsell = parseFloat(document.getElementById('futsell').value);
+            callpos = parseFloat(document.getElementById('callpos').value);
+            putpos = parseFloat(document.getElementById('putpos').value);
+            delper = parseFloat(document.getElementById('delper').value);
+
+            if (isCheck(futbuy) && isCheck(futsell) && isCheck(callpos) && isCheck(putpos) && isCheck(delper)) {
+                const futratio = futbuy / futsell;
+                const pcrRatio = putpos / callpos;
+                calculateandprintFutrtio(futratio);
+                calculateandprintPCRrtio(pcrRatio);
+                calculateandprintDelper(delper);
+
+            } else {
+                document.getElementById('ptsoutput').innerHTML = `<p class="highlight">Please enter valid non-negative numbers.</p>`;
+            }
+        }
+
+
+        function calculateandprintFutrtio(futratio) {
+            var tsr = "";
+            if (futratio) {
+                //  tsr += `FutRatio is = ${futratio}`
+                if (futratio < 0.60) {
+                    if (futratio < 0.45) {
+                        tsr += "Highly Bearish..."
+                    } else if (futratio < 0.35) {
+                        tsr += "Super Bearish..."
+                    } else {
+                        tsr += "Bearish..."
+                    }
+
+                } else if (futratio < 0.45) {
+                    if (futratio < 0.35) {
+                        tsr += "Super Bearish..."
+                    } else
+                        tsr += "Highly Bearish..."
+                } else if (futratio < 0.35) {
+                    tsr += "Super Bearish..."
+                } else if (futratio > 0.65) {
+                    if (futratio > 0.85 || futratio >= 0.90) {
+                        tsr += "Highly Bullish"
+                    } else if (futratio > 1.05) {
+                        tsr += "Super Bullish"
+                    } else
+                        tsr += "Bullish"
+                } else if (futratio > 0.85 || futratio >= 0.90) {
+                    if (futratio > 1.05) {
+                        tsr += "Super Bullish"
+                    } else
+                        tsr += "Highly Bullish"
+                } else if (futratio > 1.05) {
+                    tsr += "Super Bullish"
+                } else tsr += "Invalid...ABCCCCC"
+
+            } else {
+                tsr += "Invalid..."
+            }
+
+            document.getElementById('futratio').innerHTML = `FBS RATIO : ${futratio}`;
+            document.getElementById('futstatus').innerHTML = `FBS RATIO STATUS: ${tsr}`;
+
+        }
+
+        function calculateandprintPCRrtio(futratio) {
+            var tsr = "";
+            if (futratio) {
+                //tsr += `PCRRatio is = ${futratio}`
+                if (futratio < 0.50) {
+                    if (futratio < 0.35) {
+                        tsr += "Highly Bearish..."
+                    } else if (futratio < 0.25) {
+                        tsr += "Super Bearish..."
+                    } else {
+                        tsr += "Bearish..."
+                    }
+
+                } else if (futratio < 0.35) {
+                    if (futratio < 0.25) {
+                        tsr += "Super Bearish..."
+                    } else
+                        tsr += "Highly Bearish..."
+                } else if (futratio < 0.25) {
+                    tsr += "Super Bearish..."
+                } else if (futratio > 0.65) {
+                    if (futratio > 0.80) {
+                        tsr += "Highly Bullish"
+                    } else if (futratio > 0.90) {
+                        tsr += "Super Bullish"
+                    } else
+                        tsr += "Bullish"
+                } else if (futratio > 0.80) {
+                    if (futratio > 0.90) {
+                        tsr += "Super Bullish"
+                    } else
+                        tsr += "Highly Bullish"
+                } else if (futratio > 0.90) {
+                    tsr += "Super Bullish"
+                } else tsr += "Invalid...ABCCCCC"
+
+            } else {
+                tsr += "Invalid..."
+            }
+
+            document.getElementById('pcrratio').innerHTML = `PCR RATIO : ${futratio}`;
+            document.getElementById('pcrstatus').innerHTML = `PCR RATIO STATUS: ${tsr}`;
+
+        }
+
+        function calculateandprintDelper(futratio) {
+            var tsr = "";
+            if (futratio) {
+                if (futratio > 0.50) {
+                    tsr += "  Bullish"
+                } else if (futratio < 0.45) {
+                    tsr += "Bearish"
+                } else {
+                    tsr += "Nuetral"
+                }
+            } else {
+                tsr += "Invalid..."
+            }
+            document.getElementById('delstatus').innerHTML = `DELIVERY STATUS : ${tsr}`;
+        }
+
+        function isCheck(input) {
+            return !isNaN(input) && input >= 0 && input != ""
+        }
+    </script>
+</body>
+
+</html>
